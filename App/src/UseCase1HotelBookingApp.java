@@ -1,43 +1,30 @@
 public class UseCase1HotelBookingApp {
     public class BookMyStayApp {
-        // Inventory Class (Centralized State Management)
-import java.util.HashMap;
-import java.util.Map;
+    import java.util.List;
 
-        class RoomInventory {
-            private Map<String, Integer> availabilityMap;
+        class RoomSearchService {
 
-            // Constructor - initialize inventory
-            public RoomInventory() {
-                availabilityMap = new HashMap<>();
+            private RoomInventory inventory;
 
-                // Register room types with counts
-                availabilityMap.put("Single Room", 5);
-                availabilityMap.put("Double Room", 3);
-                availabilityMap.put("Suite Room", 2);
+            public RoomSearchService(RoomInventory inventory) {
+                this.inventory = inventory;
             }
 
-            // Get availability
-            public int getAvailability(String roomType) {
-                return availabilityMap.getOrDefault(roomType, 0);
-            }
+            // Read-only search
+            public void searchAvailableRooms(List<Room> rooms) {
+                System.out.println("=== Available Rooms ===");
 
-            // Update availability (controlled)
-            public void updateAvailability(String roomType, int newCount) {
-                if (availabilityMap.containsKey(roomType)) {
-                    availabilityMap.put(roomType, newCount);
-                } else {
-                    System.out.println("Room type not found!");
+                for (Room room : rooms) {
+                    String type = room.getRoomType();
+                    int available = inventory.getAvailability(type);
+
+                    // Defensive check: only show available rooms
+                    if (available > 0) {
+                        room.displayDetails(available);
+                    }
                 }
-            }
 
-            // Display full inventory
-            public void displayInventory() {
-                System.out.println("=== Room Inventory ===");
-                for (Map.Entry<String, Integer> entry : availabilityMap.entrySet()) {
-                    System.out.println(entry.getKey() + " -> Available: " + entry.getValue());
-                }
-                System.out.println("----------------------");
+                System.out.println("------------------------");
             }
         }
     }
