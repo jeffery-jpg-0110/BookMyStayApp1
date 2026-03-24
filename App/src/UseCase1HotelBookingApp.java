@@ -1,31 +1,66 @@
 public class UseCase1HotelBookingApp {
-    public class BookMyStayApp {
-    import java.util.List;
+    import java.util.*;
 
-        class RoomSearchService {
+    // Reservation (Booking Request)
+    class Reservation {
+        private String guestName;
+        private String roomType;
 
-            private RoomInventory inventory;
+        public Reservation(String guestName, String roomType) {
+            this.guestName = guestName;
+            this.roomType = roomType;
+        }
 
-            public RoomSearchService(RoomInventory inventory) {
-                this.inventory = inventory;
+        public String getGuestName() { return guestName; }
+        public String getRoomType() { return roomType; }
+
+        public void display() {
+            System.out.println("Guest: " + guestName + " | Room: " + roomType);
+        }
+    }
+
+    // Booking Queue (FIFO)
+    class BookingQueue {
+        private Queue<Reservation> queue = new LinkedList<>();
+
+        // Add request
+        public void addRequest(Reservation r) {
+            queue.offer(r);
+            System.out.println("Request added: " + r.getGuestName());
+        }
+
+        // View all requests
+        public void displayQueue() {
+            System.out.println("=== Booking Queue ===");
+            for (Reservation r : queue) {
+                r.display();
             }
+            System.out.println("----------------------");
+        }
 
-            // Read-only search
-            public void searchAvailableRooms(List<Room> rooms) {
-                System.out.println("=== Available Rooms ===");
+        // Peek next (no removal)
+        public Reservation peekNext() {
+            return queue.peek();
+        }
+    }
 
-                for (Room room : rooms) {
-                    String type = room.getRoomType();
-                    int available = inventory.getAvailability(type);
+    // Main
+    public class HotelApp {
+        public static void main(String[] args) {
 
-                    // Defensive check: only show available rooms
-                    if (available > 0) {
-                        room.displayDetails(available);
-                    }
-                }
+            BookingQueue queue = new BookingQueue();
 
-                System.out.println("------------------------");
-            }
+            // Guest booking requests
+            queue.addRequest(new Reservation("Ram", "Single Room"));
+            queue.addRequest(new Reservation("Arun", "Double Room"));
+            queue.addRequest(new Reservation("Priya", "Suite Room"));
+
+            // Display queue (FIFO order)
+            queue.displayQueue();
+
+            // Peek next request
+            System.out.println("Next to process:");
+            queue.peekNext().display();
         }
     }
 }
