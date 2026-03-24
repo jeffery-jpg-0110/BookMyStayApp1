@@ -1,99 +1,43 @@
 public class UseCase1HotelBookingApp {
     public class BookMyStayApp {
-        // Abstract Class
-        abstract class Room {
-            private int beds;
-            private double size;
-            private double price;
+        // Inventory Class (Centralized State Management)
+import java.util.HashMap;
+import java.util.Map;
 
-            public Room(int beds, double size, double price) {
-                this.beds = beds;
-                this.size = size;
-                this.price = price;
+        class RoomInventory {
+            private Map<String, Integer> availabilityMap;
+
+            // Constructor - initialize inventory
+            public RoomInventory() {
+                availabilityMap = new HashMap<>();
+
+                // Register room types with counts
+                availabilityMap.put("Single Room", 5);
+                availabilityMap.put("Double Room", 3);
+                availabilityMap.put("Suite Room", 2);
             }
 
-            public int getBeds() {
-                return beds;
+            // Get availability
+            public int getAvailability(String roomType) {
+                return availabilityMap.getOrDefault(roomType, 0);
             }
 
-            public double getSize() {
-                return size;
+            // Update availability (controlled)
+            public void updateAvailability(String roomType, int newCount) {
+                if (availabilityMap.containsKey(roomType)) {
+                    availabilityMap.put(roomType, newCount);
+                } else {
+                    System.out.println("Room type not found!");
+                }
             }
 
-            public double getPrice() {
-                return price;
-            }
-
-            // Abstract method
-            public abstract String getRoomType();
-
-            // Common display method
-            public void displayDetails(int availability) {
-                System.out.println("Room Type: " + getRoomType());
-                System.out.println("Beds: " + beds);
-                System.out.println("Size: " + size + " sq.ft");
-                System.out.println("Price: ₹" + price);
-                System.out.println("Available: " + availability);
-                System.out.println("-----------------------------");
-            }
-        }
-
-        // Single Room
-        class SingleRoom extends Room {
-            public SingleRoom() {
-                super(1, 200, 1500);
-            }
-
-            @Override
-            public String getRoomType() {
-                return "Single Room";
-            }
-        }
-
-        // Double Room
-        class DoubleRoom extends Room {
-            public DoubleRoom() {
-                super(2, 350, 3000);
-            }
-
-            @Override
-            public String getRoomType() {
-                return "Double Room";
-            }
-        }
-
-        // Suite Room
-        class SuiteRoom extends Room {
-            public SuiteRoom() {
-                super(3, 600, 7000);
-            }
-
-            @Override
-            public String getRoomType() {
-                return "Suite Room";
-            }
-        }
-
-        // Main Application
-        public class HotelApp {
-            public static void main(String[] args) {
-
-                // Room objects
-                Room single = new SingleRoom();
-                Room doub = new DoubleRoom();
-                Room suite = new SuiteRoom();
-
-                // Static availability (simple variables)
-                int singleAvailable = 5;
-                int doubleAvailable = 3;
-                int suiteAvailable = 2;
-
-                // Display
-                single.displayDetails(singleAvailable);
-                doub.displayDetails(doubleAvailable);
-                suite.displayDetails(suiteAvailable);
-
-                System.out.println("Application Terminated.");
+            // Display full inventory
+            public void displayInventory() {
+                System.out.println("=== Room Inventory ===");
+                for (Map.Entry<String, Integer> entry : availabilityMap.entrySet()) {
+                    System.out.println(entry.getKey() + " -> Available: " + entry.getValue());
+                }
+                System.out.println("----------------------");
             }
         }
     }
